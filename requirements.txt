@@ -1,12 +1,3 @@
-# FILE: requirements.txt
-
-# CRITICAL: This line forces Streamlit Cloud to use a Python 3.11 environment.
-# This is the most important line in the whole file.
---find-links https://pkgs.dev.azure.com/trueanalytics/a8848ab3-164e-40c2-8419-f9b139b56f0c/_packaging/trueanalytics-feed/pypi/simple/
-
-# Your list of packages goes below this line
-
-
 
 langchain==0.1.20
 giskard==2.7.0
@@ -18,5 +9,6 @@ langchain-google-genai
 scikit-learn==1.3.0 
 playwright==1.49.0
 playwright-stealth
+
 
 
