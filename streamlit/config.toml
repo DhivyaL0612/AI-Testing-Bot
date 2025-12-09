@@ -1,0 +1,19 @@
+# FILE: .streamlit/config.toml
+
+# This sets the theme for the app.
+[theme]
+
+# The main "action" color for buttons, sliders, etc.
+primaryColor = "#F4B400"  # A nice Google-y gold/yellow
+
+# The background color of the main content area.
+backgroundColor = "#1E1E1E"  # A very dark grey
+
+# The background color of the sidebar and other secondary areas.
+secondaryBackgroundColor = "#2C2C2C" # A slightly lighter dark grey
+
+# The color of the main text.
+textColor = "#FFFFFF" # White
+
+# The font to use. Can be "sans serif", "serif", or "monospace".
+font = "sans serif"
