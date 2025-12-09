@@ -1,0 +1,9 @@
+langchain
+giskard
+pandas
+python-docx
+langchain-community
+langchain-google-genai
+streamlit
+playwright==1.49.0
+playwright-stealth
