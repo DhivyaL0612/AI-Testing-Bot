@@ -1,5 +1,6 @@
 
 giskard==2.7.0
+griffe==0.39.1
 langchain
 langchain-google-genai
 pandas
@@ -7,5 +8,6 @@ streamlit
 playwright==1.49.0
 python-dotenv
 openai
+
 
 
