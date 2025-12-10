@@ -1,5 +1,5 @@
 
-langtest
+giskard
 langchain
 langchain-google-genai
 pandas
@@ -7,3 +7,4 @@ streamlit
 playwright==1.49.0
 python-dotenv
 openai
+
