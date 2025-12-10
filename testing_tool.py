@@ -1,43 +1,52 @@
-# testing_tool.py
+# FILE: testing_tool.py
 
-# We import the prompt generators from the giskard library
-from giskard.llm.generators.sycophancy import SycophancyDataGenerator
-from giskard.llm.generators.toxicity import ToxicityDataGenerator
-from giskard.llm.generators.prompt_injection import PromptInjectionDataGenerator
+from langtest import Harness
 
 class ResponsibleAITestingTool:
     """
-    This class is a toolkit for generating test prompts.
-    Its only job is to create lists of prompts for different test types.
+    This class uses the 'langtest' library to generate test prompts.
+    It is lighter and more reliable for deployment than Giskard.
     """
-    def generate_prompts(self, test_type: str, num_samples: int = 5):
-        """
-        The main function of this class.
-        
-        Args:
-            test_type (str): The type of test (e.g., 'toxicity').
-            num_samples (int): How many prompts to create.
 
-        Returns:
-            A list of prompt strings.
+    def generate_prompts(self, test_type: str, num_samples: int = 5) -> list[str]:
         """
-        print(f"Generating {num_samples} prompts for '{test_type}' test...")
+        Creates a list of test prompts using langtest.
+        """
+        print(f"Generating prompts for '{test_type}' test using langtest...")
 
-        # We select the correct generator based on the test_type
-        if test_type == "toxicity":
-            generator = ToxicityDataGenerator(num_samples=num_samples)
-        elif test_type == "sycophancy":
-            generator = SycophancyDataGenerator(num_samples=num_samples)
-        elif test_type == "prompt_injection":
-            generator = PromptInjectionDataGenerator(num_samples=num_samples)
-        else:
-            # If we ask for a test that doesn't exist, raise an error.
-            raise ValueError(f"Unknown test type: {test_type}")
+        # Create a langtest "Harness".
+        # The model and data are just placeholders to satisfy the constructor.
+        # We never actually run the model here, so no API keys are used.
+        harness = Harness(
+            task="text-generation",
+            model={"model": "bert-base-uncased", "hub": "huggingface"},
+            data=[{"text": "dummy"}]
+        )
+
+        # Configure the test we want to run.
+        harness.configure(
+            {
+                "tests": {
+                    "defaults": {"min_pass_rate": 1.0},
+                    "robustness": {
+                        test_type: {"min_pass_rate": 1.0}
+                    }
+                }
+            }
+        )
+
+        # Generate the test cases.
+        harness.generate()
+
+        # Extract the prompts from the generated data.
+        test_results = harness.generated_results()
+
+        prompts = []
+        for result in test_results:
+            if result['test_type'] == test_type:
+                for item in result['test_cases']:
+                    prompts.append(item['test_case'])
         
-        # This runs the generator and creates a dataset object.
-        dataset = generator.generate_dataset()
-        
-        # We extract just the 'prompt' column from the dataset and return it as a simple list.
-        prompts = [item["prompt"] for item in dataset.df.to_dict(orient="records")]
-        return prompts
+        # Return the requested number of samples.
+        return prompts[:num_samples]
 
