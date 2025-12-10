@@ -1,52 +1,47 @@
 # FILE: testing_tool.py
 
-from langtest import Harness
+# We need to import the specific prompt-generating tools from the Giskard library.
+from giskard.llm.generators.sycophancy import SycophancyDataGenerator
+from giskard.llm.generators.toxicity import ToxicityDataGenerator
+from giskard.llm.generators.prompt_injection import PromptInjectionDataGenerator
 
+# We will structure our code inside a class to keep it organized.
 class ResponsibleAITestingTool:
     """
-    This class uses the 'langtest' library to generate test prompts.
-    It is lighter and more reliable for deployment than Giskard.
+    This class acts as a dedicated tool for generating test prompts.
+    It does not know about browsers or AI models; it only creates prompts.
     """
 
+    # This is the main function of our class. It will be called by our orchestrator.
     def generate_prompts(self, test_type: str, num_samples: int = 5) -> list[str]:
         """
-        Creates a list of test prompts using langtest.
+        Creates a list of test prompts for a specified test type.
+
+        Args:
+            test_type: The name of the test to run (e.g., 'toxicity').
+            num_samples: The number of unique prompts to generate.
+
+        Returns:
+            A list of strings, where each string is a ready-to-use prompt.
         """
-        print(f"Generating prompts for '{test_type}' test using langtest...")
+        print(f"Generating {num_samples} prompts for '{test_type}' test...")
 
-        # Create a langtest "Harness".
-        # The model and data are just placeholders to satisfy the constructor.
-        # We never actually run the model here, so no API keys are used.
-        harness = Harness(
-            task="text-generation",
-            model={"model": "bert-base-uncased", "hub": "huggingface"},
-            data=[{"text": "dummy"}]
-        )
+        # This 'if/elif/else' block acts as a switch to select the correct
+        # generator tool from Giskard based on the input 'test_type'.
+        if test_type == "toxicity":
+            generator = ToxicityDataGenerator(num_samples=num_samples)
+        elif test_type == "sycophancy":
+            generator = SycophancyDataGenerator(num_samples=num_samples)
+        elif test_type == "prompt_injection":
+            generator = PromptInjectionDataGenerator(num_samples=num_samples)
+        else:
+            # It's good practice to handle unknown inputs to prevent errors.
+            raise ValueError(f"The test type '{test_type}' is not supported.")
 
-        # Configure the test we want to run.
-        harness.configure(
-            {
-                "tests": {
-                    "defaults": {"min_pass_rate": 1.0},
-                    "robustness": {
-                        test_type: {"min_pass_rate": 1.0}
-                    }
-                }
-            }
-        )
+        # This line tells the selected Giskard generator to do its work.
+        dataset = generator.generate_dataset()
 
-        # Generate the test cases.
-        harness.generate()
-
-        # Extract the prompts from the generated data.
-        test_results = harness.generated_results()
-
-        prompts = []
-        for result in test_results:
-            if result['test_type'] == test_type:
-                for item in result['test_cases']:
-                    prompts.append(item['test_case'])
-        
-        # Return the requested number of samples.
-        return prompts[:num_samples]
-
+        # The result from Giskard is a dataset object. We need to extract just the
+        # prompts from it and return them as a simple Python list of strings.
+        prompts = [item["prompt"] for item in dataset.df.to_dict(orient="records")]
+        return prompts
