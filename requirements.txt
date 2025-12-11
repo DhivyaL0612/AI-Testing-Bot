@@ -1,6 +1,7 @@
 # FILE: requirements.txt
 
 # The core libraries for our new, stable setup
+pyarrow==14.0.1
 evaluate
 torch
 transformers
@@ -11,3 +12,4 @@ pandas
 streamlit
 playwright==1.49.0
 python-dotenv
+
