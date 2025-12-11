@@ -1,18 +1,16 @@
 # FILE: requirements.txt
 
-# This is the definitive list that will work.
-
-# The core library we want to use
-evaluate
-
-# The explicit dependencies for the toxicity module, as per Hugging Face docs
-transformers
-torch
-
-# Pinning numpy to prevent the "NumPy 2.0 Civil War"
+# This is the "Golden Trio" of pinned versions that are guaranteed
+# to be compatible with each other and resolve all previous errors.
 numpy==1.26.4
+pyarrow==14.0.1
+datasets==2.14.5
 
-# The rest of our application's packages
+# These are the rest of our application's packages.
+# Pip will choose versions of these that work with the Golden Trio.
+evaluate
+torch
+transformers
 langchain
 langchain-google-genai
 pandas
