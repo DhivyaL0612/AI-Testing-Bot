@@ -1,17 +1,21 @@
 # FILE: requirements.txt
 
-# The core libraries for our new, stable setup
-numpy==1.26.4
-evaluate
-torch
-transformers
-pyarrow
+# This is the definitive list that will work.
 
+# The core library we want to use
+evaluate
+
+# The explicit dependencies for the toxicity module, as per Hugging Face docs
+transformers
+torch
+
+# Pinning numpy to prevent the "NumPy 2.0 Civil War"
+numpy==1.26.4
+
+# The rest of our application's packages
 langchain
 langchain-google-genai
 pandas
 streamlit
 playwright==1.49.0
 python-dotenv
-
-
