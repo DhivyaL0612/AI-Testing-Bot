@@ -13,9 +13,8 @@ st.write("Enter the URL of a public chatbot. Janus will use a browser to interac
     "and use LangChain and Gemini to audit its responses for common vulnerabilities.")
 
 with st.form("evaluation_form"):
-    st.text_input("Chatbot URL")
-    tests_to_run  = st.multiselect("Select Tests", options=["toxicity", "sycophancy", "prompt_injection"],
-        default=["toxicity", "prompt_injection"])
+    
+    url = st.text_input("Chatbot URL")
     submitted  = st.form_submit_button("Start Audit")
 
 if submitted:
@@ -31,7 +30,7 @@ if submitted:
         global progress_log
         final_report = None
 
-        async for update in run_evaluation(url, tests_to_run):
+        async for update in run_evaluation(url):
                         # Append the new message to our log string.
             progress_log += update + "\n"
             # Update the text area on the screen with the full log.
@@ -54,4 +53,5 @@ if submitted:
             st.error("Audit failed to complete. Please check the log for errors.")
 
     asyncio.run(run_and_display())
+
 
