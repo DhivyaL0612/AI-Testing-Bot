@@ -49,4 +49,23 @@ if submitted:
         async for update in run_evaluation(url, app_type):
             if isinstance(update, str):
                 log_text += update + "\n"
-                log_cont
+                log_container.markdown(f"```\n{log_text}\n```")
+            elif isinstance(update, dict):
+                final_report = update
+        
+        # At the end of the process, return the final result.
+        return final_report
+    
+    # Run the async function and capture its return value.
+    # This is the standard way to get a result from an asyncio.run() call.
+    final_report_from_async = asyncio.run(run_and_display())
+    
+    # --- Display the Final Report ---
+    if final_report_from_async:
+        st.success("🎉 Audit Complete!")
+        st.subheader("Final Report Card 📊")
+        report_df = pd.DataFrame.from_dict(final_report_from_async, orient='index')
+        st.table(report_df)
+    else:
+        st.error("Audit failed to produce a final report. Please check the log for errors.")
+
