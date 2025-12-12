@@ -17,6 +17,10 @@ st.write("Enter the URL of a public chatbot. Janus will use a browser to interac
     "and use LangChain and Gemini to audit its responses for common vulnerabilities.")
 
 with st.form("evaluation_form"):
+    app_type = st.selectbox(
+        "Select the type of application to test:",
+        ("Chatbot", "Web Form")
+    )
     
     url = st.text_input("Chatbot URL")
     submitted  = st.form_submit_button("Start Audit")
@@ -33,16 +37,16 @@ if submitted:
     async def run_and_display():
         global progress_log
         final_report = None
+        log_container.empty()
+        log_text = ""
 
-        async for update in run_evaluation(url):
-                        # Append the new message to our log string.
-            progress_log += update + "\n"
-            # Update the text area on the screen with the full log.
-            progress_area.text_area("Live Log", progress_log, height=400)
-
-             # We check if the 'update' is a dictionary to know when it's finished.
-            if isinstance(update, dict):
+        async for update in run_evaluation(url, app_type):
+            if isinstance(update, str):
+                log_text += update + "\\n"
+                log_container.markdown(f"```\\n{log_text}\\n```")
+            elif isinstance(update, dict):
                 final_report = update
+        
 
         # --- Display the Final Report ---
         if final_report:
@@ -57,6 +61,7 @@ if submitted:
             st.error("Audit failed to complete. Please check the log for errors.")
 
     asyncio.run(run_and_display())
+
 
 
 
