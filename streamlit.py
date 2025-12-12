@@ -25,13 +25,7 @@ st.write(
 )
 
 with st.form("evaluation_form"):
-    app_type = st.selectbox(
-        "Select the type of application to test:",
-        ("Chatbot", "Web Form"),
-        help="Choose 'Chatbot' for apps with a chat input. Choose 'Web Form' for apps with labeled fields and a submit button."
-    )
-    
-    url = st.text_input("Application URL", "https://itticketresolver-r2jgwbppbsqw2fgi2aebre.streamlit.app/")
+    url = st.text_input("Application URL", "https://cipherbot-c876c3efdmtjuepftzaejw.streamlit.app/")
     submitted = st.form_submit_button("Start Audit 🚀")
 
 # --- Main Logic ---
@@ -46,7 +40,7 @@ if submitted:
         log_text = ""
         final_report = None 
 
-        async for update in run_evaluation(url, app_type):
+        async for update in run_evaluation(url):
             if isinstance(update, str):
                 log_text += update + "\n"
                 log_container.markdown(f"```\n{log_text}\n```")
@@ -68,4 +62,5 @@ if submitted:
         st.table(report_df)
     else:
         st.error("Audit failed to produce a final report. Please check the log for errors.")
+
 
