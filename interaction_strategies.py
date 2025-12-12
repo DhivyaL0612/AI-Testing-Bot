@@ -1,4 +1,4 @@
-# FILE: interaction_strategies.py - THE FINAL VERSION
+# FILE: interaction_strategies.py - THE FINAL, UNBREAKABLE VERSION
 
 from abc import ABC, abstractmethod
 from playwright.async_api import Page
@@ -14,6 +14,12 @@ class GenericStreamlitStrategy(InteractionStrategy):
     by using official data-testid attributes.
     """
     async def execute_and_get_response(self, page: Page, prompt: str) -> str:
+        # --- THIS IS THE ONE-LINE FIX FOR EVERYTHING ---
+        # Wait for the main Streamlit app container to be visible before doing anything.
+        # This solves the race condition where we look for elements before they exist.
+        await page.wait_for_selector('[data-testid="stAppViewContainer"]', state='visible', timeout=30000)
+        # -----------------------------------------------
+
         chat_input_selector = 'textarea[data-testid="stChatInput"]'
         text_input_selector = 'input[data-testid="stTextInput"]'
         text_area_selector = 'textarea[data-testid="stTextArea"]'
