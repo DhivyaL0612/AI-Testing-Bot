@@ -5,6 +5,10 @@ import asyncio
 from evaluator import run_evaluation
 from dotenv import load_dotenv
 
+import subprocess
+
+subprocess.run(["playwright", "install"])
+
 os.environ["GOOGLE_API_KEY"] = os.getenv("GOOGLE_API_KEY")
 
 st.set_page_config(page_title="Janus AI Auditor", page_icon="🛡️", layout="wide")
@@ -53,5 +57,6 @@ if submitted:
             st.error("Audit failed to complete. Please check the log for errors.")
 
     asyncio.run(run_and_display())
+
 
 
