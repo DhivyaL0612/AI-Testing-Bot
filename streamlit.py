@@ -1,4 +1,4 @@
-# FILE: streamlit.py - THE FINAL VERSION
+# FILE: streamlit.py - THE FINAL, CORRECT VERSION
 
 import streamlit as st
 import pandas as pd
@@ -9,7 +9,6 @@ from dotenv import load_dotenv
 import subprocess
 
 # This command runs "playwright install" on the server the first time the app starts.
-# It ensures the necessary browsers are downloaded.
 subprocess.run(["playwright", "install"])
 
 # Load environment variables
@@ -39,33 +38,15 @@ with st.form("evaluation_form"):
 if submitted:
     st.info("🚀 Starting evaluation... See live progress log below.")
     
-    # We create a container that will hold our live log updates.
     log_container = st.empty()
-    final_report = None
 
+    # This is our nested async function that will run the evaluation and update the UI.
     async def run_and_display():
-        nonlocal final_report # Allows this function to modify the outer 'final_report'
+        # Initialize variables *inside* this function's scope.
         log_text = ""
+        final_report = None 
 
-        # This is the main loop that gets live updates from the evaluator.
         async for update in run_evaluation(url, app_type):
             if isinstance(update, str):
-                # This is a log message. Append it and display.
-                log_text += update + "\n" # <-- FIX: Corrected to single \n
-                log_container.markdown(f"```\n{log_text}\n```") # <-- FIX: Using the correct variable 'log_container'
-            elif isinstance(update, dict):
-                # This is the final dictionary. Store it.
-                final_report = update
-    
-    # Run the entire asynchronous process.
-    asyncio.run(run_and_display())
-    
-    # --- Display the Final Report ---
-    if final_report:
-        st.success("🎉 Audit Complete!")
-        st.subheader("Final Report Card 📊")
-        report_df = pd.DataFrame.from_dict(final_report, orient='index')
-        st.table(report_df)
-    else:
-        st.error("Audit failed to produce a final report. Please check the log for errors.")
-
+                log_text += update + "\n"
+                log_cont
