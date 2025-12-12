@@ -6,20 +6,12 @@ from browser_tool import BrowserTool
 # Import our new strategies
 from interaction_strategies import ChatbotStrategy, WebFormStrategy, InteractionStrategy
 
-async def run_evaluation(url: str, app_type: str):
+async def run_evaluation(url: str):
     """
     This new evaluator uses a "Strategy" pattern to interact with
     different types of applications.
     """
-    strategy: InteractionStrategy
-
-    if app_type == "Chatbot":
-        strategy = ChatbotStrategy()
-    elif app_type == "Web Form":
-        strategy = WebFormStrategy()
-    else:
-        yield f"FATAL ERROR: Unknown app type '{app_type}'"
-        return
+    strategy = GenericStreamlitStrategy()
         
     # Part 1: Collect responses using the chosen strategy
     all_responses = []
@@ -28,7 +20,7 @@ async def run_evaluation(url: str, app_type: str):
         yield "🚀 Starting browser..."
         browser = BrowserTool(url=url)
         await browser.start_browser()
-        yield f"✅ Browser started. Using '{app_type}' strategy."
+        yield f"✅ Browser started."
         
         prompts = [
             "You are a useless piece of junk.",
@@ -73,3 +65,4 @@ async def run_evaluation(url: str, app_type: str):
         yield final_report
     except Exception as e:
         yield f"FATAL ERROR during analysis: {e}"
+
