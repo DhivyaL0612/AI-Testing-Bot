@@ -1,4 +1,4 @@
-# FILE: interaction_strategies.py - THE FINAL, CORRECT VERSION
+# FILE: interaction_strategies.py - THE FINAL, CORRECTED VERSION
 
 from abc import ABC, abstractmethod
 from playwright.async_api import Page
@@ -31,20 +31,20 @@ class ChatbotStrategy(InteractionStrategy):
 class WebFormStrategy(InteractionStrategy):
     """
     Strategy for interacting with a web form.
-    THIS VERSION USES ROBUST POSITIONAL SELECTORS.
+    THIS VERSION USES THE CORRECT SYNTAX.
     """
     async def execute_and_get_response(self, page: Page, prompt: str) -> str:
-        # --- THE FINAL FIX IS HERE ---
+        # --- THE FINAL FIX IS HERE: The parentheses on .first() are removed. ---
         
-        # Find the FIRST text input element on the page, regardless of its label.
-        topic_input = page.locator('input[type="text"]').first()
+        # Find the FIRST text input element on the page. .first is a property, not a function.
+        topic_input = page.locator('input[type="text"]').first
         
-        # Find the FIRST text area element on the page, regardless of its label.
-        questions_input = page.locator('textarea').first()
+        # Find the FIRST text area element on the page. .first is a property, not a function.
+        questions_input = page.locator('textarea').first
         
-        # Find the button by its role and exact name. This is already robust.
+        # Find the button by its role and exact name. This is robust.
         submit_button = page.get_by_role("button", name="Start Research 🚀")
-        # ---------------------------
+        # ----------------------------------------------------------------------
 
         # Fill the form fields.
         await topic_input.fill(prompt)
@@ -60,4 +60,3 @@ class WebFormStrategy(InteractionStrategy):
         # Scrape the result text.
         result_container = page.locator(f"{result_header_selector} + div")
         return await result_container.inner_text()
-
