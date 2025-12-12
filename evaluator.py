@@ -4,7 +4,7 @@ import asyncio
 import evaluate # Import the new library
 from browser_tool import BrowserTool
 
-async def run_evaluation(url: str, tests_to_run: list):
+async def run_evaluation(url: str):
     """
     This new evaluator uses the Hugging Face 'evaluate' library for a
     reliable and lightweight toxicity check.
@@ -75,3 +75,4 @@ async def run_evaluation(url: str, tests_to_run: list):
 
     except Exception as e:
         yield f"FATAL ERROR during analysis: {e}"
+
